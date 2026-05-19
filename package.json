@@ -19,10 +19,11 @@
     "src"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.docs.config.ts",
     "build": "vite build && tsc --emitDeclarationOnly --declaration --outDir dist",
-    "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "docs:build": "vite build --config vite.docs.config.ts",
+    "docs:preview": "vite preview --config vite.docs.config.ts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

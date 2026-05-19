@@ -64,6 +64,6 @@ The library expects you to provide Alpine and Tailwind yourself.
 
 ```bash
 npm install
-npm run dev     # Vite dev server
+npm run dev     # Vite dev server, live reloading of docs
 npm run build   # Build dist/
 ```
