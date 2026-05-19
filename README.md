@@ -24,6 +24,10 @@ npm install github:eismamediagroep/ui-kit#main
 
 When stable version is available, use it via for example `@v0.1.0` or use `@main` while iterating.
 
+## CDN Demo
+
+https://jsfiddle.net/80uq6orm/
+
 ## Usage
 
 The library expects you to provide Alpine and Tailwind yourself.
