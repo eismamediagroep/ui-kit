@@ -1,0 +1,31 @@
+{
+  "name": "@eismamediagroep/ui-kit",
+  "version": "0.1.0",
+  "description": "Framework-agnostic web components built on Alpine.js and Tailwind v4.",
+  "type": "module",
+  "main": "./dist/eisma.umd.cjs",
+  "module": "./dist/eisma.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/eisma.js",
+      "require": "./dist/eisma.umd.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./iife": "./dist/eisma.iife.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vite": "^5.2.0"
+  }
+}

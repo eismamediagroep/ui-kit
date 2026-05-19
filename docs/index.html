@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eisma UI Kit — docs</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+      @custom-variant dark (&:where(.dark, .dark *));
+
+      @theme {
+        --color-primary: #183E74;
+        --color-primary-foreground: rgb(255 255 255 / 0.95);
+        --color-secondary: #F6A600;
+        --color-secondary-foreground: rgb(20 20 20 / 0.9);
+      }
+    </style>
+
+    <script>
+      (function () {
+        var stored = localStorage.getItem('eisma-theme');
+        var dark = stored === 'dark'
+          || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
+
+    <script src="https://unpkg.com/@alpinejs/focus@3.15.12/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.15.12/dist/cdn.min.js" defer></script>
+    <script defer src="../dist/eisma.iife.js"></script>
+
+    <!-- highlight.js: github theme for light, github-dark for dark. We load
+         both and toggle the `disabled` attribute on the link tags so syntax
+         colors follow the page's class-based dark mode. -->
+    <link id="hljs-light-theme" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github.min.css">
+    <link id="hljs-dark-theme" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css">
+    <script>
+      (function () {
+        function sync() {
+          var isDark = document.documentElement.classList.contains('dark');
+          var light = document.getElementById('hljs-light-theme');
+          var dark = document.getElementById('hljs-dark-theme');
+          if (light) light.disabled = isDark;
+          if (dark) dark.disabled = !isDark;
+        }
+        sync();
+        new MutationObserver(sync).observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['class'],
+        });
+      })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js" defer></script>
+    <script defer>
+      document.addEventListener('DOMContentLoaded', () => {
+        if (window.hljs) window.hljs.highlightAll();
+      });
+    </script>
+
+    <style>
+      html { scroll-behavior: smooth; }
+      [x-cloak] { display: none !important; }
+      body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+      pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      /* hljs theme sets its own background; let our <pre> wrapper control it
+         so the rounded corners + outer box-shadow sit cleanly around the code. */
+      pre code.hljs { background: transparent; padding: 0; }
+    </style>
+  </head>
+  <body class="antialiased bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50">
+    <div class="flex min-h-screen">
+
+      <aside class="w-60 shrink-0 sticky top-0 self-start h-screen overflow-y-auto px-6 py-8 border-r border-neutral-200/70 dark:border-neutral-800/70">
+        <div class="mb-8">
+          <div class="text-base font-semibold tracking-tight">Eisma UI Kit</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">v0.1</div>
+        </div>
+        <nav class="space-y-6 text-sm">
+          <div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">Getting started</div>
+            <ul class="space-y-1.5">
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#installation">Installation</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#tailwind-setup">Tailwind setup</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#dark-mode">Dark mode</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#color-tokens">Color tokens</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">Components</div>
+            <ul class="space-y-1.5">
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#button">Button</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#badge">Badge</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#card">Card</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#input">Input</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#select">Select</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#textarea">Textarea</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#checkbox">Checkbox</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#radio">Radio</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#switch">Switch</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#tooltip">Tooltip</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#callout">Callout</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#dropdown">Dropdown</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#tabs">Tabs</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#accordion">Accordion</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#modal">Modal</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#icon">Icon</a></li>
+              <li><a class="text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-neutral-50 block" href="#theme-toggle">Theme toggle</a></li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="flex-1 min-w-0 max-w-3xl px-10 py-12">
+        <div class="flex items-start justify-between mb-12">
+          <div>
+            <h1 class="text-3xl font-semibold tracking-tight">Eisma UI Kit</h1>
+            <p class="text-neutral-600 dark:text-neutral-400 mt-2">
+              Framework-agnostic Web Components built on Alpine.js and Tailwind v4.
+            </p>
+          </div>
+          <eisma-theme-toggle></eisma-theme-toggle>
+        </div>
+
+        <!-- =================== INSTALLATION =================== -->
+        <section id="installation" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Installation</h2>
+
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+            <strong>Via CDN</strong> — zero install, paste a script tag:
+          </p>
+          <eisma-code language="html">&lt;script src="https://cdn.jsdelivr.net/gh/eismamediagroep/ui-kit@main/dist/eisma.iife.js" defer&gt;&lt;/script&gt;</eisma-code>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 mb-6">
+            Pin a tag (<code class="text-[11px]">@v0.1.0</code>) for production or use <code class="text-[11px]">@main</code> while iterating.
+          </p>
+
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+            <strong>Via npm</strong> — published to GitHub Packages:
+          </p>
+          <eisma-code language="bash">npm install @eismamediagroep/ui-kit</eisma-code>
+
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-6 mb-2">
+            <strong>Page setup</strong> — load Alpine and the bundle. Alpine handles all reactivity; the bundle registers the custom elements.
+          </p>
+
+          <eisma-code language="html">&lt;script src="https://unpkg.com/alpinejs@3.x" defer&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/eismamediagroep/ui-kit@main/dist/eisma.iife.js" defer&gt;&lt;/script&gt;</eisma-code>
+        </section>
+
+        <!-- =================== TAILWIND SETUP =================== -->
+        <section id="tailwind-setup" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Tailwind setup</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            <strong>Build pipeline:</strong> add the package to your Tailwind input CSS so
+            utility classes are scanned:
+          </p>
+          <eisma-code language="css">@import "tailwindcss";
+@source "../node_modules/@eisma/ui-kit/dist/**/*.js";</eisma-code>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            <strong>Browser CDN:</strong> use the v4 browser bundle. Do <em>not</em> use
+            the old <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">cdn.tailwindcss.com</code>
+            (v3 Play CDN) — its runtime scanner doesn't reliably pick up classes added by
+            custom elements after their initial mount.
+          </p>
+          <eisma-code language="html">&lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"&gt;&lt;/script&gt;</eisma-code>
+        </section>
+
+        <!-- =================== DARK MODE =================== -->
+        <section id="dark-mode" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Dark mode</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            Components ship with <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">dark:</code>
+            variants. Activate class-based dark mode by adding this to your CSS:
+          </p>
+          <eisma-code language="css">@custom-variant dark (&amp;:where(.dark, .dark *));</eisma-code>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            Then drop in
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;eisma-theme-toggle&gt;</code>
+            for a persistent toggle with system-preference fallback, or toggle
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">class="dark"</code>
+            on <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;html&gt;</code> yourself.
+          </p>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            To prevent a light flash on load, add this inline in <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;head&gt;</code>:
+          </p>
+          <eisma-code language="html">&lt;script&gt;
+  var stored = localStorage.getItem('eisma-theme');
+  var dark = stored === 'dark' || (!stored &amp;&amp; matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', dark);
+&lt;/script&gt;</eisma-code>
+        </section>
+
+        <!-- =================== COLOR TOKENS =================== -->
+        <section id="color-tokens" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Color tokens</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+            The <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">primary</code>,
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">secondary</code>, and
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">link</code> button variants pull
+            from Tailwind v4 @theme tokens — set the brand once and every button picks it up.
+          </p>
+          <eisma-code language="css"> inline {
+  --color-primary: #183E74;
+  --color-primary-foreground: rgb(255 255 255 / 0.95);
+  --color-secondary: #F6A600;
+  --color-secondary-foreground: rgb(20 20 20 / 0.9);
+}</eisma-code>
+        </section>
+
+
+        <!-- =================== BUTTON =================== -->
+        <section id="button" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Button</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            Renders a <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;button&gt;</code> by
+            default, or <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;a&gt;</code> when
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">href</code> is present.
+          </p>
+
+          <h3 class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-3">Variants</h3>
+          <div class="rounded-md p-6 mb-3 flex flex-wrap gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-button>Default</eisma-button>
+            <eisma-button variant="primary">Primary</eisma-button>
+            <eisma-button variant="secondary">Secondary</eisma-button>
+            <eisma-button variant="outline">Outline</eisma-button>
+            <eisma-button variant="ghost">Ghost</eisma-button>
+            <eisma-button variant="destructive">Destructive</eisma-button>
+            <eisma-button variant="link" href="#button">Link</eisma-button>
+          </div>
+          <eisma-code language="html">&lt;eisma-button&gt;Default&lt;/eisma-button&gt;
+&lt;eisma-button variant="primary"&gt;Primary&lt;/eisma-button&gt;
+&lt;eisma-button variant="secondary"&gt;Secondary&lt;/eisma-button&gt;
+&lt;eisma-button variant="outline"&gt;Outline&lt;/eisma-button&gt;
+&lt;eisma-button variant="ghost"&gt;Ghost&lt;/eisma-button&gt;
+&lt;eisma-button variant="destructive"&gt;Destructive&lt;/eisma-button&gt;
+&lt;eisma-button variant="link" href="/route"&gt;Link&lt;/eisma-button&gt;</eisma-code>
+
+          <h3 class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-3">Sizes</h3>
+          <div class="rounded-md p-6 mb-3 flex flex-wrap items-center gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-button size="sm">Small</eisma-button>
+            <eisma-button>Default</eisma-button>
+            <eisma-button size="lg">Large</eisma-button>
+            <eisma-button size="icon" aria-label="Search"><eisma-icon name="search"></eisma-icon></eisma-button>
+            <eisma-button disabled>Disabled</eisma-button>
+          </div>
+          <eisma-code language="html">&lt;eisma-button size="sm"&gt;Small&lt;/eisma-button&gt;
+&lt;eisma-button&gt;Default&lt;/eisma-button&gt;
+&lt;eisma-button size="lg"&gt;Large&lt;/eisma-button&gt;
+&lt;eisma-button size="icon" aria-label="Search"&gt;
+  &lt;eisma-icon name="search"&gt;&lt;/eisma-icon&gt;
+&lt;/eisma-button&gt;</eisma-code>
+
+          <h3 class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-3">With icons</h3>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+            Use <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">icon-left</code> /
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">icon-right</code> for inline icons.
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">icon-library</code> switches sets (lucide by default).
+          </p>
+          <div class="rounded-md p-6 mb-3 flex flex-wrap items-center gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-button icon-left="search">Search</eisma-button>
+            <eisma-button icon-right="arrow-right" variant="outline">Continue</eisma-button>
+            <eisma-button icon-left="trash-2" variant="destructive">Delete</eisma-button>
+            <eisma-button icon-left="github" icon-library="fa-brands" variant="outline">Sign in with GitHub</eisma-button>
+            <eisma-button icon-left="check" icon-right="chevron-down">Save</eisma-button>
+          </div>
+          <eisma-code language="html">&lt;eisma-button icon-left="search"&gt;Search&lt;/eisma-button&gt;
+&lt;eisma-button icon-right="arrow-right" variant="outline"&gt;Continue&lt;/eisma-button&gt;
+&lt;eisma-button icon-left="trash-2" variant="destructive"&gt;Delete&lt;/eisma-button&gt;
+
+&lt;!-- Brand icons via icon-library --&gt;
+&lt;eisma-button icon-left="github" icon-library="fa-brands" variant="outline"&gt;
+  Sign in with GitHub
+&lt;/eisma-button&gt;
+
+&lt;!-- Both sides --&gt;
+&lt;eisma-button icon-left="check" icon-right="chevron-down"&gt;Save&lt;/eisma-button&gt;</eisma-code>
+
+          <h3 class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-3">Attributes</h3>
+          <div class="overflow-x-auto">
+            <table class="text-sm w-full">
+              <thead class="text-left text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                <tr><th class="py-2 pr-4 font-medium">Attribute</th><th class="py-2 pr-4 font-medium">Values</th></tr>
+              </thead>
+              <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs">variant</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">default | primary | secondary | outline | ghost | destructive | link</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">size</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">default | sm | lg | icon</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">href</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">URL — renders &lt;a&gt; instead of &lt;button&gt;</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">icon-left</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">icon name to render before label</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">icon-right</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">icon name to render after label</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">icon-library</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">lucide | heroicons | fa-brands | fa-solid | fa-regular (default: lucide)</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">modal</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">id of target eisma-modal</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">toggle / open / close</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">action on the modal id</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =================== BADGE =================== -->
+        <section id="badge" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Badge</h2>
+          <div class="rounded-md p-6 mb-3 flex flex-wrap gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-badge>Default</eisma-badge>
+            <eisma-badge variant="secondary">Secondary</eisma-badge>
+            <eisma-badge variant="outline">Outline</eisma-badge>
+            <eisma-badge variant="destructive">Destructive</eisma-badge>
+          </div>
+          <eisma-code language="html">&lt;eisma-badge&gt;Default&lt;/eisma-badge&gt;
+&lt;eisma-badge variant="secondary"&gt;Secondary&lt;/eisma-badge&gt;
+&lt;eisma-badge variant="outline"&gt;Outline&lt;/eisma-badge&gt;
+&lt;eisma-badge variant="destructive"&gt;Destructive&lt;/eisma-badge&gt;</eisma-code>
+        </section>
+
+        <!-- =================== CARD =================== -->
+        <section id="card" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Card</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            A simple container with padding, rounded corners, and the same
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">border border-neutral-200 dark:border-neutral-800</code>
+            treatment as the rest of the kit. Put anything you want inside.
+          </p>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-card>
+              <h3 class="text-base font-semibold leading-none tracking-tight">Account</h3>
+              <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1.5">
+                Manage your account settings and email preferences.
+              </p>
+              <div class="mt-4 flex gap-2">
+                <eisma-button size="sm">Save</eisma-button>
+                <eisma-button size="sm" variant="outline">Cancel</eisma-button>
+              </div>
+            </eisma-card>
+          </div>
+          <eisma-code language="html">&lt;eisma-card&gt;
+  &lt;h3 class="text-base font-semibold"&gt;Account&lt;/h3&gt;
+  &lt;p class="text-sm text-neutral-500 mt-1.5"&gt;…&lt;/p&gt;
+  &lt;div class="mt-4 flex gap-2"&gt;
+    &lt;eisma-button size="sm"&gt;Save&lt;/eisma-button&gt;
+    &lt;eisma-button size="sm" variant="outline"&gt;Cancel&lt;/eisma-button&gt;
+  &lt;/div&gt;
+&lt;/eisma-card&gt;</eisma-code>
+        </section>
+
+        <!-- =================== INPUT =================== -->
+        <section id="input" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Input</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            Styled wrapper around <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;input&gt;</code>.
+            Supports <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">icon-left</code> and
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">icon-right</code> (lucide icon names).
+          </p>
+          <div class="rounded-md p-6 mb-3 space-y-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-input placeholder="Plain input"></eisma-input>
+            <eisma-input type="email" placeholder="you@example.com" icon-left="mail"></eisma-input>
+            <eisma-input type="search" placeholder="Search…" icon-left="search"></eisma-input>
+          </div>
+          <eisma-code language="html">&lt;eisma-input placeholder="Plain input"&gt;&lt;/eisma-input&gt;
+&lt;eisma-input type="email" placeholder="you@example.com" icon-left="mail"&gt;&lt;/eisma-input&gt;
+&lt;eisma-input type="search" placeholder="Search…" icon-left="search"&gt;&lt;/eisma-input&gt;</eisma-code>
+        </section>
+
+        <!-- =================== SELECT =================== -->
+        <section id="select" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Select</h2>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-select>
+              <option>Free</option>
+              <option>Pro</option>
+              <option>Team</option>
+            </eisma-select>
+          </div>
+          <eisma-code language="html">&lt;eisma-select&gt;
+  &lt;option&gt;Free&lt;/option&gt;
+  &lt;option&gt;Pro&lt;/option&gt;
+  &lt;option&gt;Team&lt;/option&gt;
+&lt;/eisma-select&gt;</eisma-code>
+        </section>
+
+        <!-- =================== TEXTAREA =================== -->
+        <section id="textarea" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Textarea</h2>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-textarea rows="3" placeholder="Tell us about yourself"></eisma-textarea>
+          </div>
+          <eisma-code language="html">&lt;eisma-textarea rows="3" placeholder="Tell us about yourself"&gt;&lt;/eisma-textarea&gt;</eisma-code>
+        </section>
+
+        <!-- =================== CHECKBOX =================== -->
+        <section id="checkbox" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Checkbox</h2>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-checkbox name="terms" value="1">I accept the terms and conditions</eisma-checkbox>
+          </div>
+          <eisma-code language="html">&lt;eisma-checkbox name="terms" value="1"&gt;
+  I accept the terms and conditions
+&lt;/eisma-checkbox&gt;</eisma-code>
+        </section>
+
+        <!-- =================== RADIO =================== -->
+        <section id="radio" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Radio</h2>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <fieldset class="flex flex-col gap-2">
+              <eisma-radio name="freq" value="all" checked>All</eisma-radio>
+              <eisma-radio name="freq" value="mentions">Mentions</eisma-radio>
+              <eisma-radio name="freq" value="none">None</eisma-radio>
+            </fieldset>
+          </div>
+          <eisma-code language="html">&lt;fieldset class="flex flex-col gap-2"&gt;
+  &lt;eisma-radio name="freq" value="all" checked&gt;All&lt;/eisma-radio&gt;
+  &lt;eisma-radio name="freq" value="mentions"&gt;Mentions&lt;/eisma-radio&gt;
+  &lt;eisma-radio name="freq" value="none"&gt;None&lt;/eisma-radio&gt;
+&lt;/fieldset&gt;</eisma-code>
+        </section>
+
+        <!-- =================== SWITCH =================== -->
+        <section id="switch" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Switch</h2>
+          <div class="rounded-md p-6 mb-3 flex flex-col gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-switch name="marketing" checked>Marketing emails</eisma-switch>
+            <eisma-switch name="newsletter">Weekly newsletter</eisma-switch>
+            <eisma-switch disabled>Disabled option</eisma-switch>
+          </div>
+          <eisma-code language="html">&lt;eisma-switch name="marketing" checked&gt;Marketing emails&lt;/eisma-switch&gt;
+&lt;eisma-switch name="newsletter"&gt;Weekly newsletter&lt;/eisma-switch&gt;</eisma-code>
+        </section>
+
+        <!-- =================== TOOLTIP =================== -->
+        <section id="tooltip" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Tooltip</h2>
+          <div class="rounded-md p-6 mb-3 flex flex-wrap gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-tooltip text="Hover to reveal">
+              <eisma-button variant="outline">Hover me</eisma-button>
+            </eisma-tooltip>
+            <eisma-tooltip text="Click to toggle" trigger="click">
+              <eisma-button variant="outline">Click me</eisma-button>
+            </eisma-tooltip>
+            <eisma-tooltip text="Delete this user" side="bottom">
+              <eisma-button variant="ghost" size="icon" aria-label="Delete">
+                <eisma-icon name="trash-2"></eisma-icon>
+              </eisma-button>
+            </eisma-tooltip>
+          </div>
+          <eisma-code language="html">&lt;eisma-tooltip text="Delete this user" side="bottom"&gt;
+  &lt;eisma-button variant="ghost" size="icon" aria-label="Delete"&gt;
+    &lt;eisma-icon name="trash-2"&gt;&lt;/eisma-icon&gt;
+  &lt;/eisma-button&gt;
+&lt;/eisma-tooltip&gt;</eisma-code>
+
+          <h3 class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mt-8 mb-3">Programmatic control</h3>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+            Give the tooltip an <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">id</code> and you can drive it from anywhere via Alpine
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">$dispatch</code>. The <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">eisma-tooltip-flash</code>
+            event shows a temporary message and reverts — perfect for "copied!" feedback.
+          </p>
+          <div class="rounded-md p-6 mb-3 flex flex-wrap gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-tooltip id="copy-email" text="Copy email">
+              <eisma-button
+                variant="outline"
+                icon-left="copy"
+                x-data
+                x-on:click="
+                  navigator.clipboard.writeText('hello@example.com');
+                  $dispatch('eisma-tooltip-flash', { id: 'copy-email', text: 'Copied!' });
+                "
+              >
+                hello@example.com
+              </eisma-button>
+            </eisma-tooltip>
+
+            <eisma-tooltip id="copy-token" text="Copy token" trigger="manual">
+              <eisma-button
+                variant="ghost" size="icon" aria-label="Copy token"
+                x-data
+                x-on:click="
+                  navigator.clipboard.writeText('tok_abc123');
+                  $dispatch('eisma-tooltip-flash', { id: 'copy-token', text: 'Copied!', duration: 1200 });
+                "
+              >
+                <eisma-icon name="copy"></eisma-icon>
+              </eisma-button>
+            </eisma-tooltip>
+          </div>
+          <eisma-code language="html">&lt;eisma-tooltip id="copy-email" text="Copy email"&gt;
+  &lt;eisma-button
+    icon-left="copy"
+    x-data
+    x-on:click="
+      navigator.clipboard.writeText('hello@example.com');
+      $dispatch('eisma-tooltip-flash', { id: 'copy-email', text: 'Copied!' });
+    "
+  &gt;
+    hello@example.com
+  &lt;/eisma-button&gt;
+&lt;/eisma-tooltip&gt;</eisma-code>
+
+          <h3 class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mt-8 mb-3">Events</h3>
+          <div class="overflow-x-auto">
+            <table class="text-sm w-full">
+              <thead class="text-left text-xs uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                <tr><th class="py-2 pr-4 font-medium">Event</th><th class="py-2 pr-4 font-medium">Detail</th></tr>
+              </thead>
+              <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800">
+                <tr><td class="py-2 pr-4 font-mono text-xs">eisma-tooltip-show</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">{ id, text? } — open; optionally swap text</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">eisma-tooltip-hide</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">{ id } — close</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">eisma-tooltip-toggle</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">{ id, text? } — toggle; optionally swap text</td></tr>
+                <tr><td class="py-2 pr-4 font-mono text-xs">eisma-tooltip-flash</td><td class="py-2 pr-4 text-neutral-600 dark:text-neutral-400">{ id, text, duration? } — temporarily show text, revert (1500ms default)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- =================== CALLOUT =================== -->
+        <section id="callout" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Callout</h2>
+          <div class="rounded-md p-6 mb-3 space-y-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-callout title="Heads up!">
+              <eisma-icon name="terminal"></eisma-icon>
+              You can add components to your app using the CLI.
+            </eisma-callout>
+            <eisma-callout variant="info" title="Just so you know">
+              <eisma-icon name="info"></eisma-icon>
+              A maintenance window is scheduled for Saturday 02:00 UTC.
+            </eisma-callout>
+            <eisma-callout variant="warning" title="Be careful">
+              <eisma-icon name="triangle-alert"></eisma-icon>
+              This action is rate-limited to 100 requests per minute.
+            </eisma-callout>
+            <eisma-callout variant="destructive" title="Something went wrong">
+              <eisma-icon name="circle-x"></eisma-icon>
+              Your session expired. Please log in again.
+            </eisma-callout>
+          </div>
+          <eisma-code language="html">&lt;eisma-callout variant="warning" title="Be careful"&gt;
+  &lt;eisma-icon name="triangle-alert"&gt;&lt;/eisma-icon&gt;
+  This action is rate-limited to 100 requests per minute.
+&lt;/eisma-callout&gt;</eisma-code>
+        </section>
+
+        <!-- =================== DROPDOWN =================== -->
+        <section id="dropdown" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Dropdown</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            First element child is the trigger; everything after is the menu.
+          </p>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-dropdown>
+              <eisma-button variant="outline">
+                Options
+                <eisma-icon name="chevron-down"></eisma-icon>
+              </eisma-button>
+              <eisma-dropdown-label>My Account</eisma-dropdown-label>
+              <eisma-dropdown-separator></eisma-dropdown-separator>
+              <eisma-dropdown-item>
+                <eisma-icon name="user"></eisma-icon>
+                Profile
+              </eisma-dropdown-item>
+              <eisma-dropdown-item>
+                <eisma-icon name="settings"></eisma-icon>
+                Settings
+              </eisma-dropdown-item>
+              <eisma-dropdown-separator></eisma-dropdown-separator>
+              <eisma-dropdown-item destructive>
+                <eisma-icon name="log-out"></eisma-icon>
+                Log out
+              </eisma-dropdown-item>
+            </eisma-dropdown>
+          </div>
+          <eisma-code language="html">&lt;eisma-dropdown&gt;
+  &lt;eisma-button variant="outline"&gt;
+    Options &lt;eisma-icon name="chevron-down"&gt;&lt;/eisma-icon&gt;
+  &lt;/eisma-button&gt;
+  &lt;eisma-dropdown-label&gt;My Account&lt;/eisma-dropdown-label&gt;
+  &lt;eisma-dropdown-separator&gt;&lt;/eisma-dropdown-separator&gt;
+  &lt;eisma-dropdown-item&gt;Profile&lt;/eisma-dropdown-item&gt;
+  &lt;eisma-dropdown-item&gt;Settings&lt;/eisma-dropdown-item&gt;
+  &lt;eisma-dropdown-separator&gt;&lt;/eisma-dropdown-separator&gt;
+  &lt;eisma-dropdown-item destructive&gt;Log out&lt;/eisma-dropdown-item&gt;
+&lt;/eisma-dropdown&gt;</eisma-code>
+        </section>
+
+        <!-- =================== TABS =================== -->
+        <section id="tabs" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Tabs</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            Switch between panels. Triggers use <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">value</code>
+            to identify their panel; the <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">default</code>
+            attr on <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;eisma-tabs&gt;</code>
+            picks the initially-open tab.
+          </p>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-tabs default="account">
+              <eisma-tab-list>
+                <eisma-tab value="account">Account</eisma-tab>
+                <eisma-tab value="password">Password</eisma-tab>
+                <eisma-tab value="notifications">Notifications</eisma-tab>
+              </eisma-tab-list>
+              <eisma-tab-panel value="account">
+                <p class="text-sm">Update your personal account information. Make changes to your profile and save when you're done.</p>
+              </eisma-tab-panel>
+              <eisma-tab-panel value="password">
+                <p class="text-sm">Change your password here. After saving, you'll be logged out everywhere else.</p>
+              </eisma-tab-panel>
+              <eisma-tab-panel value="notifications">
+                <p class="text-sm">Choose what notifications you want to receive and how often.</p>
+              </eisma-tab-panel>
+            </eisma-tabs>
+          </div>
+          <eisma-code language="html">&lt;eisma-tabs default="account"&gt;
+  &lt;eisma-tab-list&gt;
+    &lt;eisma-tab value="account"&gt;Account&lt;/eisma-tab&gt;
+    &lt;eisma-tab value="password"&gt;Password&lt;/eisma-tab&gt;
+    &lt;eisma-tab value="notifications"&gt;Notifications&lt;/eisma-tab&gt;
+  &lt;/eisma-tab-list&gt;
+  &lt;eisma-tab-panel value="account"&gt;…&lt;/eisma-tab-panel&gt;
+  &lt;eisma-tab-panel value="password"&gt;…&lt;/eisma-tab-panel&gt;
+  &lt;eisma-tab-panel value="notifications"&gt;…&lt;/eisma-tab-panel&gt;
+&lt;/eisma-tabs&gt;</eisma-code>
+        </section>
+
+        <!-- =================== ACCORDION =================== -->
+        <section id="accordion" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Accordion</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            Single-open by default. Add
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">type="multiple"</code>
+            on <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;eisma-accordion&gt;</code>
+            to allow multiple items open at once.
+          </p>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-accordion>
+              <eisma-accordion-item value="q1">
+                <eisma-accordion-trigger>Is it accessible?</eisma-accordion-trigger>
+                <eisma-accordion-content>
+                  Yes. Triggers are buttons with <code class="text-[12px]">aria-expanded</code>;
+                  content is wrapped in <code class="text-[12px]">role="region"</code> with an id
+                  the trigger references via <code class="text-[12px]">aria-controls</code>.
+                </eisma-accordion-content>
+              </eisma-accordion-item>
+              <eisma-accordion-item value="q2">
+                <eisma-accordion-trigger>Is it styled?</eisma-accordion-trigger>
+                <eisma-accordion-content>
+                  Yes. Triggers use the same font/size conventions as the rest of the kit; items get a thin neutral divider between them.
+                </eisma-accordion-content>
+              </eisma-accordion-item>
+              <eisma-accordion-item value="q3">
+                <eisma-accordion-trigger>Can multiple items be open?</eisma-accordion-trigger>
+                <eisma-accordion-content>
+                  Set <code class="text-[12px]">type="multiple"</code> on the accordion. Each item then manages its own open state independently.
+                </eisma-accordion-content>
+              </eisma-accordion-item>
+            </eisma-accordion>
+          </div>
+          <eisma-code language="html">&lt;eisma-accordion&gt;
+  &lt;eisma-accordion-item value="q1"&gt;
+    &lt;eisma-accordion-trigger&gt;Is it accessible?&lt;/eisma-accordion-trigger&gt;
+    &lt;eisma-accordion-content&gt;
+      Yes…
+    &lt;/eisma-accordion-content&gt;
+  &lt;/eisma-accordion-item&gt;
+&lt;/eisma-accordion&gt;</eisma-code>
+        </section>
+
+        <!-- =================== MODAL =================== -->
+        <section id="modal" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Modal</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            Triggered by buttons elsewhere on the page via Alpine
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">$dispatch</code>.
+            Closes on Escape, backdrop click, or any <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">close</code> button.
+          </p>
+          <div class="rounded-md p-6 mb-3 flex flex-wrap gap-2 border border-neutral-200 dark:border-neutral-800">
+            <eisma-button modal="docs-modal" toggle>Open modal</eisma-button>
+          </div>
+          <eisma-code language="html">&lt;eisma-button modal="welcome" toggle&gt;Open modal&lt;/eisma-button&gt;
+
+&lt;eisma-modal id="welcome"&gt;
+  &lt;h3&gt;Title&lt;/h3&gt;
+  &lt;p&gt;Body…&lt;/p&gt;
+  &lt;eisma-button modal="welcome" close&gt;Close&lt;/eisma-button&gt;
+&lt;/eisma-modal&gt;</eisma-code>
+
+          <eisma-modal id="docs-modal">
+            <div class="space-y-1.5">
+              <h3 class="text-lg font-semibold leading-none tracking-tight">Are you sure?</h3>
+              <p class="text-sm text-neutral-500 dark:text-neutral-400">
+                This action cannot be undone.
+              </p>
+            </div>
+            <div class="mt-6 flex justify-end gap-2">
+              <eisma-button modal="docs-modal" close variant="outline">Cancel</eisma-button>
+              <eisma-button modal="docs-modal" close variant="destructive">Delete</eisma-button>
+            </div>
+          </eisma-modal>
+        </section>
+
+        <!-- =================== ICON =================== -->
+        <section id="icon" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Icon</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            Lazy-loads from <a class="underline" href="https://lucide.dev">lucide</a>,
+            heroicons, or FontAwesome on first use and caches in memory. Inherits color via
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">currentColor</code>.
+          </p>
+          <div class="rounded-md p-6 mb-3 flex items-center gap-4 border border-neutral-200 dark:border-neutral-800">
+            <eisma-icon name="search"></eisma-icon>
+            <eisma-icon name="user" size="20"></eisma-icon>
+            <eisma-icon name="bell" size="24" class="text-primary"></eisma-icon>
+            <eisma-icon library="heroicons-solid" name="star" size="24" class="text-secondary"></eisma-icon>
+            <eisma-icon library="fa-brands" name="github" size="24"></eisma-icon>
+            <eisma-icon library="fa-brands" name="x-twitter" size="24" class="text-black dark:text-white"></eisma-icon>
+            <eisma-icon library="fa-brands" name="linkedin" size="24" class="text-[#0a66c2]"></eisma-icon>
+            <eisma-icon library="fa-solid" name="heart" size="24" class="text-red-500"></eisma-icon>
+          </div>
+          <eisma-code language="html">&lt;!-- lucide (default) --&gt;
+&lt;eisma-icon name="search"&gt;&lt;/eisma-icon&gt;
+
+&lt;!-- heroicons --&gt;
+&lt;eisma-icon library="heroicons-solid" name="star"&gt;&lt;/eisma-icon&gt;
+
+&lt;!-- fontawesome brands / solid / regular --&gt;
+&lt;eisma-icon library="fa-brands" name="github"&gt;&lt;/eisma-icon&gt;
+&lt;eisma-icon library="fa-brands" name="linkedin" class="text-[#0a66c2]"&gt;&lt;/eisma-icon&gt;
+&lt;eisma-icon library="fa-solid"  name="heart" class="text-red-500"&gt;&lt;/eisma-icon&gt;</eisma-code>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 mb-6">
+            Available libraries:
+            <code class="text-[11px]">lucide</code> ·
+            <code class="text-[11px]">heroicons</code> (outline) ·
+            <code class="text-[11px]">heroicons-solid</code> ·
+            <code class="text-[11px]">heroicons-mini</code> ·
+            <code class="text-[11px]">fa-brands</code> ·
+            <code class="text-[11px]">fa-solid</code> ·
+            <code class="text-[11px]">fa-regular</code>.
+          </p>
+
+          <h3 class="text-sm font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-3">Custom / brand icons</h3>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+            Two paths for icons that aren't in any of the bundled libraries:
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">src</code>
+            (any URL — fetched + cached) or paste an inline
+            <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">&lt;svg&gt;</code>
+            as a child. Existing fills in the SVG are preserved either way, so brand colors come through.
+          </p>
+          <div class="rounded-md p-6 mb-3 flex items-center gap-4 border border-neutral-200 dark:border-neutral-800">
+            <eisma-icon src="./assets/eisma.svg" size="40"></eisma-icon>
+            <eisma-icon size="32">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 43 43"><path d="M35.8 4.2c.9.6 3 2.1 4.5 4.7 1.4 2.5 2.7 5.9 2.5 9.3-.1 3.4-1.1 5.4-3.2 8.3-3 4.1-4.6 5.5-6.7 7.3-2.2 1.9-3 2.6-4.4 3.6s-3.1 2.2-4.5 3-2.3 1.4-3.5 1.9c-1.1.5-2.1.7-2.5.5-.4-.3-.5-.8-.2-1.2s1.2-1.3 2.5-2.4c1.5-1.3 2.4-2 3.4-3s2.1-2.2 3.4-4.3c1.2-2 1.6-3.5 1.3-5.4-.2-1.8-1.3-4-1.8-5.3-.6-1.3-1-2.2-1.2-3.4-.3-1.1-.3-2.4.2-3.4s1.1-1.9 1.7-2.7c1-1.3 1.3-1.6 2.5-2.9 1-1.1 1.9-2 2.5-2.6 1.1-1.1 1.8-1.7 2.1-1.9.5-.3 1.1-.3 1.4-.1" style="fill:#163e74"/><path d="M7.4 37.7c-.5-.4-2-1.4-4.2-4.5-1.7-2.4-3.3-6.4-3.1-9.8s1.1-5.8 3.6-8.9C6 11.6 8.1 9.6 10.3 8c2.3-1.7 3.1-2.3 4.6-3.3 1.4-.9 3.3-2 4.8-2.8C21.6.9 22.1.7 23.4.2c1.1-.5 2.3-.6 2.6-.4.4.3.6.6.1 1.3-.3.4-1.8 1.3-3.2 2.3-1.7 1.2-2.1 1.4-3.3 2.5-1.1 1-2.4 2.1-3.5 4.2s-1.2 3.5-.9 5.3c.4 1.8 1.3 3.9 1.8 5.2.6 1.3.9 2.4 1.1 3.5.3 1.1.1 2.6-.4 3.5-.5 1-1.1 1.9-1.7 2.7-1 1.3-1.3 1.6-2.5 2.9-1 1.1-1.9 2-2.5 2.6-1.1 1.1-1.2 1.3-2 1.8-.5.6-1.1.4-1.6.1" style="fill:#f7a600"/></svg>
+            </eisma-icon>
+          </div>
+          <eisma-code language="html">&lt;!-- fetch from any URL --&gt;
+&lt;eisma-icon src="/assets/eisma.svg" size="40"&gt;&lt;/eisma-icon&gt;
+
+&lt;!-- or paste the SVG inline --&gt;
+&lt;eisma-icon size="32"&gt;
+  &lt;svg xmlns="..." viewBox="0 0 43 43"&gt;
+    &lt;path d="..." style="fill:#163e74"/&gt;
+    &lt;path d="..." style="fill:#f7a600"/&gt;
+  &lt;/svg&gt;
+&lt;/eisma-icon&gt;</eisma-code>
+        </section>
+
+        <!-- =================== THEME TOGGLE =================== -->
+        <section id="theme-toggle" class="mb-16 scroll-mt-8">
+          <h2 class="text-xl font-semibold tracking-tight mb-2">Theme toggle</h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+            Self-contained dark/light toggle with <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">localStorage</code>
+            persistence + <code class="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[12px]">prefers-color-scheme</code> fallback.
+          </p>
+          <div class="rounded-md p-6 mb-3 border border-neutral-200 dark:border-neutral-800">
+            <eisma-theme-toggle></eisma-theme-toggle>
+          </div>
+          <eisma-code language="html">&lt;eisma-theme-toggle&gt;&lt;/eisma-theme-toggle&gt;</eisma-code>
+        </section>
+
+      </main>
+    </div>
+  </body>
+</html>
