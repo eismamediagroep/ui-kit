@@ -13,7 +13,7 @@ exactly the way you'd expect.
 **Via npm (GitHub Packages):**
 
 ```bash
-npm install @eismamediagroep/ui-kit
+npm install github:eismamediagroep/ui-kit#main
 ```
 
 **Via CDN (no install):**
@@ -39,7 +39,7 @@ The library expects you to provide Alpine and Tailwind yourself.
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <!-- Eisma UI Kit (IIFE registers the custom elements) -->
-    <script defer src="https://cdn.jsdelivr.net/gh/eisma/ui-kit@v0.1.0/dist/eisma.iife.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/eismamediagroep/ui-kit@main/dist/eisma.iife.js"></script>
   </head>
   <body>
     <eisma-button modal="welcome" toggle>Open modal</eisma-button>
