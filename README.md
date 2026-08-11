@@ -64,6 +64,17 @@ The library expects you to provide Alpine and Tailwind yourself.
 @source "../node_modules/@eismamediagroep/ui-kit/dist/**/*.js";
 ```
 
+### Overriding default classes
+
+Pass `class` on a component. Defaults and your classes are merged with
+[tailwind-merge](https://github.com/dcastil/tailwind-merge), so conflicting
+utilities resolve in your favor:
+
+```html
+<!-- font-bold replaces the button's default font-medium -->
+<eisma-button class="font-bold" variant="primary">Save</eisma-button>
+```
+
 ## Development
 
 ```bash

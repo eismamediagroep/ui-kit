@@ -11,7 +11,9 @@ export declare abstract class EismaElement extends HTMLElement {
     protected abstract mount(): void;
     /**
      * Combine library default classes with whatever the consumer put on the host.
-     * Removes the host's `class` attribute so styling lives only on the inner wrapper.
+     * Uses tailwind-merge so consumer utilities win on conflict (e.g. font-bold
+     * replaces font-medium). Removes the host's `class` so styling lives on the
+     * inner wrapper.
      */
     protected mergeClass(defaults: string): string;
     /**

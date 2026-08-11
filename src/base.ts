@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 /**
  * Base class for all <eisma-*> custom elements.
  *
@@ -27,12 +29,14 @@ export abstract class EismaElement extends HTMLElement {
 
   /**
    * Combine library default classes with whatever the consumer put on the host.
-   * Removes the host's `class` attribute so styling lives only on the inner wrapper.
+   * Uses tailwind-merge so consumer utilities win on conflict (e.g. font-bold
+   * replaces font-medium). Removes the host's `class` so styling lives on the
+   * inner wrapper.
    */
   protected mergeClass(defaults: string): string {
     const custom = this.getAttribute('class') || '';
     this.removeAttribute('class');
-    return [defaults, custom].filter(Boolean).join(' ').trim();
+    return twMerge(defaults, custom);
   }
 
   /**
